@@ -1,6 +1,5 @@
 # Microservices Kubernetes Deployment Using Minikube
 
-**Assessment:** Microservices Kubernetes Deployment (50 marks)  
 **Source repository:** https://github.com/mohanDevOps-arch/Microservices-Task  
 **Platform:** AWS EC2 (Ubuntu 24.04 LTS), Docker, Minikube, Kubernetes  
 **Ingress:** Not used (optional bonus excluded)
@@ -96,7 +95,7 @@ minikube status
 kubectl get nodes
 ```
 
-**📸 Capture now (recommended):** `screenshots/minikube.png` showing Minikube running and the node `Ready`.
+**📸 Capture :** `screenshots/minikube.png` showing Minikube running and the node `Ready`.
 
 ## 5. Clone original source and create Dockerfiles
 
@@ -136,7 +135,7 @@ minikube image build -t gateway-service:1.0 Microservices/gateway-service
 minikube image ls | grep service
 ```
 
-**📸 Capture now (recommended):** `screenshots/docker-images.png` showing all four images.
+**📸 Capture :** `screenshots/docker-images.png` showing all four images.
 
 ## 6. Kubernetes manifest structure
 
@@ -176,7 +175,7 @@ kubectl apply --dry-run=client -f submission/deployments/
 kubectl apply --dry-run=client -f submission/services/
 ```
 
-**📸 Capture now (optional):** `screenshots/yaml-validation.png` showing successful dry-run output.
+**📸 Capture** `screenshots/yaml-validation.png` showing successful dry-run output.
 
 Deploy:
 
@@ -195,9 +194,8 @@ Verify:
 kubectl get pods
 ```
 
-**Expected:** four microservice Pods show `1/1` and `Running`.
 
-**📸 Capture now (MANDATORY):** `screenshots/pods.png` showing `kubectl get pods` and all four running Pods.
+**📸 Capture(MANDATORY):** `screenshots/pods.png` showing `kubectl get pods` and all four running Pods.
 
 Next:
 
@@ -205,9 +203,8 @@ Next:
 kubectl get svc
 ```
 
-**Expected:** the four application Services show `ClusterIP` with the correct ports.
 
-**📸 Capture now (recommended):** `screenshots/services.png` showing all four application Services.
+
 
 ## 8. Verify service communication inside Kubernetes
 
@@ -223,7 +220,7 @@ kubectl exec deployment/gateway-service -- node -e "fetch('http://order-service:
 
 **Expected:** User JSON (John Doe/Jane Smith), Product JSON (Laptop/Phone), and initially empty Order JSON (`[]`).
 
-**📸 Capture now (recommended):** `screenshots/communication.png` showing successful DNS-based responses.
+**📸 Capture :** `screenshots/communication.png` showing successful DNS-based responses.
 
 Check startup logs:
 
@@ -234,7 +231,7 @@ kubectl logs deployment/order-service
 kubectl logs deployment/gateway-service
 ```
 
-**📸 Capture now (MANDATORY):** `screenshots/logs.png` showing service startup logs and ideally successful communication test output. The sample apps log startup but may not log each HTTP call; successful API responses are important evidence.
+**📸 Capture** `screenshots/logs.png` showing service startup logs and ideally successful communication test output. The sample apps log startup but may not log each HTTP call; successful API responses are important evidence.
 
 ## 9. Test Gateway with curl (no Ingress, no SSH tunnel)
 
@@ -286,61 +283,10 @@ http://EC2_PUBLIC_IP:3003/api/orders
 
 The browser will display **JSON**, not a graphical frontend. That is expected for these API services.
 
-**📸 Capture now (MANDATORY):** `screenshots/service-test.png` showing the public-IP browser URL and successful JSON output.
+**📸 Capture ** `screenshots/service-test.png` showing the public-IP browser URL and successful JSON output.
 
 The port-forward process is temporary. Stop it with `Ctrl+C` after the demo and remove the temporary 3003 inbound Security Group rule.
 
-## 11. Verification checklist (50 marks)
-
-- [ ] Minikube cluster running; node `Ready`.
-- [ ] Four images built and available inside Minikube.
-- [ ] Four Deployment manifests with correct image, resources, environment, labels/selectors and HTTP probes (**18 marks**).
-- [ ] Four ClusterIP Service manifests with correct selectors/ports (**12 marks**).
-- [ ] Four Pods `Running`, four Deployments available.
-- [ ] Gateway-to-backend communication works using Kubernetes DNS (**Minikube/testing portion of 15 marks**).
-- [ ] Browser/curl access via Gateway works without Ingress.
-- [ ] README and mandatory screenshots included (**documentation/testing portion of 5 marks**).
-
-The rubric awards **30 marks** for manifests, **15 marks** for setup/validation and **5 marks** for documentation/testing. The checklist documents coverage, not a guaranteed grade.
-
-## 12. Troubleshooting
-
-| Issue | Check / fix |
-| --- | --- |
-| Docker permission denied | Reconnect after `sudo usermod -aG docker "$USER"`. |
-| Minikube won't start | Check EC2 instance size and `free -h`; confirm Docker is running. |
-| `ErrImageNeverPull` or `ImagePullBackOff` | Build the image with `minikube image build`; ensure exact image name/tag matches YAML. |
-| `CrashLoopBackOff` | `kubectl logs deployment/<service-name>` and `kubectl describe pods`. |
-| Liveness/readiness failure | Verify `/health` and container ports. |
-| Gateway returns HTTP 500 | Check backend Pods, ClusterIP Services and DNS names; rerun section 8 tests. |
-| Browser timeout | Ensure port-forward runs, allow inbound TCP 3003 from your IP, and use `http://`, not HTTPS. |
-| Orders disappear | Expected; Order Service uses in-memory storage. |
-
-Useful commands:
-
-```bash
-kubectl get pods -o wide
-kubectl get deployments
-kubectl get svc
-kubectl get endpoints
-kubectl describe deployment gateway-service
-kubectl logs deployment/gateway-service
-```
-
-## 13. Package and submit
-
-Ensure `submission/screenshots/` contains **real screenshots**, not placeholder images.
-
-From the directory containing `submission/`:
-
-```bash
-zip -r submission.zip submission/
-unzip -l submission.zip
-```
-
-Submit `submission.zip` with `submission/` at the archive root. Do not include an Ingress manifest because the optional bonus task was deliberately skipped. Dockerfiles can be committed to the source repository or retained as separate build evidence; the required submission ZIP structure contains the eight YAML files, screenshots and this README.
-
----
 
 **Project outcome:** A working four-service Node.js application on Minikube, using Kubernetes Service DNS, Deployment probes and resource controls, and a simple EC2 public-IP Gateway demonstration without Ingress or a database.
 
